@@ -8,7 +8,12 @@ import {
   Patch,
   Post,
 } from '@nestjs/common';
-import { MessagePattern } from '@nestjs/microservices';
+import {
+  Ctx,
+  MessagePattern,
+  Payload,
+  RedisContext,
+} from '@nestjs/microservices';
 import { DeleteResult, UpdateResult } from 'typeorm';
 import { CreateUserDto } from './dto/create-user-body.dto';
 import { FindUserDto } from './dto/find-user-body.dto';
@@ -25,6 +30,14 @@ export class UserController {
   }
 
   @MessagePattern('CREATE_USER')
+  getNotifications(
+    @Payload() data: CreateUserDto,
+    @Ctx() context: RedisContext,
+  ) {
+    console.log(`Channel: ${context.getChannel()}`);
+    this.userService.create(data);
+  }
+
   @Post()
   async create(@Body() createUserDto: CreateUserDto): Promise<FindUserDto> {
     return this.userService.create(createUserDto);
