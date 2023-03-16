@@ -4,11 +4,11 @@ import {
   Delete,
   Get,
   Param,
-  ParseIntPipe,
   ParseUUIDPipe,
   Patch,
   Post,
 } from '@nestjs/common';
+import { MessagePattern } from '@nestjs/microservices';
 import { DeleteResult, UpdateResult } from 'typeorm';
 import { CreateUserDto } from './dto/create-user-body.dto';
 import { FindUserDto } from './dto/find-user-body.dto';
@@ -24,6 +24,7 @@ export class UserController {
     return this.userService.findOne(id);
   }
 
+  @MessagePattern('CREATE_USER')
   @Post()
   async create(@Body() createUserDto: CreateUserDto): Promise<FindUserDto> {
     return this.userService.create(createUserDto);
