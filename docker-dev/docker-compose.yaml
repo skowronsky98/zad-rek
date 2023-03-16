@@ -1,0 +1,28 @@
+version: '3.7'
+services:
+  postgres:
+    image: postgres:14-alpine
+    hostname: postgres
+    container_name: app-db
+    ports:
+      - '5432:5432'
+    environment:
+      - POSTGRES_USERNAME=postgres
+      - POSTGRES_HOST=localhost
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=postgres
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U postgres']
+      interval: 5s
+      timeout: 15s
+      retries: 5
+    volumes:
+      - ./pgdata:/var/lib/postgresql/data
+  redis:
+    image: 'redislabs/rejson:2.0.0'
+    ports:
+      - '6379:6379'
+    volumes:
+      - 'redisdata:/data'
+volumes:
+  redisdata:
